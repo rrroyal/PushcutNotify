@@ -27,7 +27,11 @@ enum AppError: Error, LocalizedError {
 struct PushcutNotify: ParsableCommand {
 	static let configuration = CommandConfiguration(
 		abstract: "Send Pushcut notifications.",
-		subcommands: [Send.self, SetURL.self])
+		subcommands: [
+			Send.self,
+			SetURL.self,
+			List.self
+		])
 	
 	init() { }
 }

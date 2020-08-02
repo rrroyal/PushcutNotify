@@ -8,24 +8,29 @@
 import Foundation
 import ArgumentParser
 
-/// Sets the endpoint URL.
+/// Sets the endpoint URLs.
 struct SetURL: ParsableCommand {
-	public static let configuration = CommandConfiguration(abstract: "Sets the endpoint URL.")
+	public static let configuration = CommandConfiguration(abstract: "Sets the endpoint URLs.")
+	
+	@Argument(help: "Name")
+	private var name: String
 	
 	@Argument(help: "Endpoint URL")
 	private var url: String?
 	
 	func run() throws {
+		var dictionary: [String: Any] = UserDefaults.standard.dictionary(forKey: "Endpoints") ?? [:]
 		
 		if let url: String = url {
-			if let url: URL = URL(string: url) {
-				UserDefaults.standard.set(url, forKey: "EndpointURL")
-				print("Endpoint URL has been set to \"\(url)\"!")
-			}
+			dictionary[name] = url
+			print(dictionary)
+			print("Endpoint URL with name \"\(name)\" has been set to \"\(url)\"!")
 		} else {
-			UserDefaults.standard.removeObject(forKey: "EndpointURL")
-			print("Endpoint URL has been removed!")
+			dictionary[name] = nil
+			print("Removed endpoint with name \"\(name)\".")
 		}
+		
+		UserDefaults.standard.set(dictionary, forKey: "Endpoints")
 		SetURL.exit()
 	}
 }

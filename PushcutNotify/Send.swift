@@ -12,6 +12,9 @@ import ArgumentParser
 struct Send: ParsableCommand {
 	public static let configuration = CommandConfiguration(abstract: "Sends the Pushcut notification.")
 	
+	@Argument(help: "Endpoint name")
+	private var endpoint: String
+	
 	@Argument(help: "Notification title")
 	private var title: String
 	
@@ -21,7 +24,9 @@ struct Send: ParsableCommand {
 	@Flag private var verbose: Bool
 	
 	func run() throws {
-		guard let url = UserDefaults.standard.url(forKey: "EndpointURL") else {
+		guard let endpoints = UserDefaults.standard.dictionary(forKey: "Endpoints"),
+			  let endpointURL: String = endpoints[endpoint] as? String,
+			  let url: URL = URL(string: endpointURL) else {
 			throw AppError.noEndpointURL
 		}
 		
